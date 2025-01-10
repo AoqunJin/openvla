@@ -841,6 +841,31 @@ def libero_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     return trajectory
 
 
+def metaworld_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
+    # gripper action is in -1 (open)...1 (close) --> clip to 0...1, flip --> +1 = open, 0 = close
+    gripper_action = trajectory["action"][:, -1:]
+    gripper_action = invert_gripper_actions(tf.clip_by_value(gripper_action, 0, 1))
+
+    trajectory["action"] = tf.concat(
+        [
+            trajectory["action"][:, :3],
+            tf.zeros_like(trajectory["action"][:, :3]),  # no rotation
+            gripper_action,
+        ],
+        axis=1,
+    )
+    trajectory["observation"]["EEF_state"] = tf.concat(
+        [
+            trajectory["observation"]["state"][:, :3],
+            tf.zeros_like(trajectory["observation"]["state"][:, 3:4]),  # no rotation
+            trajectory["observation"]["state"][:, 3:4],
+        ],
+        axis=1,
+    )    
+    
+    return trajectory
+
+
 # === Registry ===
 OXE_STANDARDIZATION_TRANSFORMS = {
     "bridge_oxe": bridge_oxe_dataset_transform,
@@ -919,4 +944,9 @@ OXE_STANDARDIZATION_TRANSFORMS = {
     "libero_object_no_noops": libero_dataset_transform,
     "libero_goal_no_noops": libero_dataset_transform,
     "libero_10_no_noops": libero_dataset_transform,
+    "metaworld_ml10_20e": metaworld_dataset_transform,
+    "metaworld_ml10_40e": metaworld_dataset_transform,
+    "metaworld_ml10_100e": metaworld_dataset_transform,
+    "metaworld_ml45_20e": metaworld_dataset_transform,
+    "metaworld_ml45_40e": metaworld_dataset_transform,
 }

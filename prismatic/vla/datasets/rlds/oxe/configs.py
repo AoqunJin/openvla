@@ -670,39 +670,32 @@ OXE_DATASET_CONFIGS = {
         "state_encoding": StateEncoding.POS_EULER,
         "action_encoding": ActionEncoding.EEF_POS,
     },
-    "metaworld_ml10_20e": {
-        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
-        "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
-        "state_obs_keys": ["state"],
-        "state_encoding": StateEncoding.POS_EULER,
-        "action_encoding": ActionEncoding.EEF_POS,
-    },
-    "metaworld_ml10_40e": {
-        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
+    "metaworld_ml10_50e": {
+        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": None},
         "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
         "state_obs_keys": ["state"],
         "state_encoding": StateEncoding.POS_EULER,
         "action_encoding": ActionEncoding.EEF_POS,
     },
     "metaworld_ml10_100e": {
-        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
+        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": None},
         "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
         "state_obs_keys": ["state"],
         "state_encoding": StateEncoding.POS_EULER,
         "action_encoding": ActionEncoding.EEF_POS,
     },
-    "metaworld_ml45_20e": {
-        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
+    "metaworld_ml45_50e": {
+        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": None},
         "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
         "state_obs_keys": ["state"],
         "state_encoding": StateEncoding.POS_EULER,
         "action_encoding": ActionEncoding.EEF_POS,
     },
-    "metaworld_ml45_40e": {
-        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
+    "metaworld_ml45_100e": {
+        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": None},
         "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
         "state_obs_keys": ["state"],
         "state_encoding": StateEncoding.POS_EULER,
         "action_encoding": ActionEncoding.EEF_POS,
-    },
+    }
 }

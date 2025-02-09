@@ -162,6 +162,22 @@ def finetune(cfg: FinetuneConfig) -> None:
         low_cpu_mem_usage=True,
         trust_remote_code=True,
     )
+    
+    # Test random init
+    # import torch.nn as nn
+    
+    # def randomize_weights(module):
+    #     if isinstance(module, (nn.Linear, nn.Conv2d)):
+    #         nn.init.xavier_uniform_(module.weight)
+    #         if module.bias is not None:
+    #             nn.init.zeros_(module.bias)
+    #     elif isinstance(module, nn.Embedding):
+    #         nn.init.normal_(module.weight, mean=0, std=1)
+    #     elif isinstance(module, nn.LayerNorm):
+    #         nn.init.ones_(module.weight)
+    #         nn.init.zeros_(module.bias)
+
+    # vla.apply(randomize_weights)
 
     # Device Placement =>> note that BitsAndBytes automatically handles for quantized training
     if cfg.use_quantization:
@@ -239,7 +255,7 @@ def finetune(cfg: FinetuneConfig) -> None:
 
     # Initialize Logging =>> W&B
     if distributed_state.is_main_process:
-        wandb.init(entity=cfg.wandb_entity, project=cfg.wandb_project, name=f"ft+{exp_id}")
+        wandb.init(entity=cfg.wandb_entity, project=cfg.wandb_project, name=f"ft+{exp_id}", mode="offline")
 
     # Deque to store recent train metrics (used for computing smoothened metrics for gradient accumulation)
     recent_losses = deque(maxlen=cfg.grad_accumulation_steps)

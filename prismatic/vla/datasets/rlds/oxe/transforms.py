@@ -844,7 +844,8 @@ def libero_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
 def metaworld_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
     # gripper action is in -1 (open)...1 (close) --> clip to 0...1, flip --> +1 = open, 0 = close
     gripper_action = trajectory["action"][:, -1:]
-    gripper_action = invert_gripper_actions(tf.clip_by_value(gripper_action, 0, 1))
+    gripper_action = tf.clip_by_value((gripper_action + 1) / 2, 0, 1)
+    gripper_action = invert_gripper_actions(gripper_action)
 
     trajectory["action"] = tf.concat(
         [
@@ -854,10 +855,11 @@ def metaworld_dataset_transform(trajectory: Dict[str, Any]) -> Dict[str, Any]:
         ],
         axis=1,
     )
-    trajectory["observation"]["EEF_state"] = tf.concat(
+    trajectory["observation"]["state"] = tf.concat(
         [
             trajectory["observation"]["state"][:, :3],
-            tf.zeros_like(trajectory["observation"]["state"][:, 3:4]),  # no rotation
+            tf.zeros_like(trajectory["observation"]["state"][:, :3]),  # no rotation
+            tf.zeros_like(trajectory["observation"]["state"][:, 3:4]),  # <PAD> (1)
             trajectory["observation"]["state"][:, 3:4],
         ],
         axis=1,
@@ -944,9 +946,20 @@ OXE_STANDARDIZATION_TRANSFORMS = {
     "libero_object_no_noops": libero_dataset_transform,
     "libero_goal_no_noops": libero_dataset_transform,
     "libero_10_no_noops": libero_dataset_transform,
-    "metaworld_ml10_20e": metaworld_dataset_transform,
-    "metaworld_ml10_40e": metaworld_dataset_transform,
+    ### metaworld datasets (modified versions)
+    "metaworld_ml10_50e": metaworld_dataset_transform,
     "metaworld_ml10_100e": metaworld_dataset_transform,
-    "metaworld_ml45_20e": metaworld_dataset_transform,
-    "metaworld_ml45_40e": metaworld_dataset_transform,
+    "metaworld_ml45_50e": metaworld_dataset_transform,
+    "metaworld_ml45_100e": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c1": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c2": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c3": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c4": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c5": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c6": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c7": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c8": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c9": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c10": metaworld_dataset_transform,
+    "metaworld_openvla_7b_c11": metaworld_dataset_transform,
 }

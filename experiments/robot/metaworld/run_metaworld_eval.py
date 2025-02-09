@@ -9,7 +9,7 @@ Usage:
     python experiments/robot/libero/run_libero_eval.py \
         --model_family openvla \
         --pretrained_checkpoint <CHECKPOINT_PATH> \
-        --task_suite_name [ metaworld_ml10_20e | ... ] \
+        --task_suite_name [ metaworld_ml10_50e | ... ] \
         --center_crop [ True | False ] \
         --run_id_note <OPTIONAL TAG TO INSERT INTO RUN ID FOR LOGGING> \
         --use_wandb [ True | False ] \
@@ -23,11 +23,9 @@ import copy
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Union
-
+from tqdm import tqdm
 import draccus
 import numpy as np
-import tqdm
-
 import wandb
 
 # Append current directory so that interpreter can find experiments.robot
@@ -66,7 +64,7 @@ class GenerateConfig:
     #################################################################################################################
     # LIBERO environment-specific parameters
     #################################################################################################################
-    task_suite_name: str = "metaworld_ml10_20e"      # Task suite. Options: metaworld_ml10_20e, ...
+    task_suite_name: str = "metaworld_ml10_50e"      # Task suite. Options: metaworld_ml10_50e, ...
     num_steps_wait: int = 10                         # Number of steps to wait for objects to stabilize in sim
     num_trials_per_task: int = 50                    # Number of rollouts per task
 
@@ -129,6 +127,7 @@ def eval_libero(cfg: GenerateConfig) -> None:
             entity=cfg.wandb_entity,
             project=cfg.wandb_project,
             name=run_id,
+            mode="offline"
         )
 
     # Get expected image dimensions
@@ -143,7 +142,7 @@ def eval_libero(cfg: GenerateConfig) -> None:
         # running rollouts
         total_return = 0
         total_accuracy = 0
-        for i in range(20):
+        for i in tqdm(range(50)):
             obs, info = env.reset()
             images = []
             episode_return = 0.0
@@ -185,10 +184,10 @@ def eval_libero(cfg: GenerateConfig) -> None:
             if i % 5 == 0:
                 wandb.log({"rollout_video": wandb.Video(np.array(images).transpose(0, 3, 1, 2)[::10])})
 
-            print('Trunc:', trunc, 'Done:', done)
+            # print('Trunc:', trunc, 'Done:', done)
 
-        print(f"Environment: {name}, Average return: {total_return / 20}, Average accuracy: {total_accuracy / 20}")
-        wandb.log({name: {"average_return": total_return / 20, "average_accuracy": total_accuracy / 20,}})
+        print(f"Environment: {name}, Average return: {total_return / 50}, Average accuracy: {total_accuracy / 50}")
+        wandb.log({name: {"average_return": total_return / 50, "average_accuracy": total_accuracy / 50,}})
 
 if __name__ == "__main__":
     eval_libero()

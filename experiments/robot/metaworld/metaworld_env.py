@@ -46,7 +46,7 @@ class MetaworldEnv(gym.Env):
         info.update({"state": state})
         obs = {
             "image_primary": images,
-            "proprio": np.asarray(state, dtype=np.float32)
+            "proprio": np.asarray(state[:4], dtype=np.float32)
         }
         
         if info['success']: 
@@ -64,7 +64,7 @@ class MetaworldEnv(gym.Env):
         info.update({"state": state})
         obs = {
             "image_primary": images,
-            "proprio": np.asarray(state, dtype=np.float32)
+            "proprio": np.asarray(state[:4], dtype=np.float32)
         }
         
         return obs, info
